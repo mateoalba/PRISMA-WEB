@@ -29,6 +29,11 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      # Next genera los tipos PageProps/LayoutProps/RouteContext al compilar;
+      # en un proyecto recién descargado hay que generarlos antes de revisar.
+      - name: Generar tipos de rutas
+        run: npx next typegen
+
       - name: Revisar tipos
         run: npx tsc --noEmit
 
