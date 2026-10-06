@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 import styles from "@/styles/admin.module.css";
+import { Portal } from "./SharedUi";
 
 type ConfirmState = { title: string; message: string; resolve: (ok: boolean) => void } | null;
 type ToastItem = { id: number; message: string; undo?: () => void };
@@ -108,46 +109,52 @@ export function AdminUiProvider({ children }: { children: React.ReactNode }) {
     <AdminUiContext.Provider value={{ syncing, notify, confirmDelete, runDeferred }}>
       {children}
 
-      <div className={styles.toasts}>
-        {toasts.map((t) => (
-          <div key={t.id} className={styles.toast} role="status">
-            <span className={styles.toastOk}>
-              <CheckIcon />
-            </span>
-            {t.message}
-            {t.undo && (
-              <button type="button" className={styles.toastDeshacer} onClick={t.undo}>
-                Deshacer
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
+      {/* Los avisos y el diálogo se montan dentro de .admin (vía Portal): este
+          proveedor vive fuera de él, y sin eso no heredan los colores. */}
+      <Portal>
+        <div className={styles.toasts}>
+          {toasts.map((t) => (
+            <div key={t.id} className={styles.toast} role="status">
+              <span className={styles.toastOk}>
+                <CheckIcon />
+              </span>
+              {t.message}
+              {t.undo && (
+                <button type="button" className={styles.toastDeshacer} onClick={t.undo}>
+                  Deshacer
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      </Portal>
 
       {confirmState && (
-        <div className={styles.modalVelo} role="presentation" onClick={() => handleConfirm(false)}>
-          <div
-            className={styles.modalCaja}
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="admin-confirm-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <span className={styles.modalIco}>
-              <WarningIcon />
-            </span>
-            <h2 id="admin-confirm-title">{confirmState.title}</h2>
-            <p>{confirmState.message}</p>
-            <div className={styles.modalAcc}>
-              <button type="button" className={`${styles.btn} ${styles.btnG}`} onClick={() => handleConfirm(false)}>
-                Cancelar
-              </button>
-              <button type="button" className={`${styles.btn} ${styles.btnPeligroSolido}`} onClick={() => handleConfirm(true)}>
-                Sí, eliminar
-              </button>
+        <Portal>
+          <div className={styles.modalVelo} role="presentation" onClick={() => handleConfirm(false)}>
+            <div
+              className={styles.modalCaja}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="admin-confirm-title"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className={styles.modalIco}>
+                <WarningIcon />
+              </span>
+              <h2 id="admin-confirm-title">{confirmState.title}</h2>
+              <p>{confirmState.message}</p>
+              <div className={styles.modalAcc}>
+                <button type="button" className={`${styles.btn} ${styles.btnG}`} onClick={() => handleConfirm(false)}>
+                  Cancelar
+                </button>
+                <button type="button" className={`${styles.btn} ${styles.btnPeligroSolido}`} onClick={() => handleConfirm(true)}>
+                  Sí, eliminar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </Portal>
       )}
     </AdminUiContext.Provider>
   );
