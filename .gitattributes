@@ -1,0 +1,4 @@
+# Los scripts del servidor deben quedar siempre con saltos de línea de Linux.
+*.sh text eol=lf
+*.cjs text eol=lf
+*.yml text eol=lf

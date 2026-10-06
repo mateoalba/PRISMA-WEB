@@ -1,0 +1,96 @@
+name: Revisar y publicar
+
+# - En cada Pull Request: solo revisa (tipos, lint y build).
+# - En cada push a main: revisa y, si todo pasa, publica en el servidor de AWS.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Un despliegue a la vez: si llegan dos cambios seguidos, el segundo espera.
+concurrency:
+  group: despliegue-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    name: Revisar y compilar
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Revisar tipos
+        run: npx tsc --noEmit
+
+      - name: Revisar código (lint)
+        run: npm run lint
+
+      # Las NEXT_PUBLIC_* se incrustan en el código al compilar, por eso hacen
+      # falta aquí. Son valores públicos (llave "anon"), no secretos.
+      - name: Compilar
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Empaquetar la versión
+        run: |
+          cp -r public .next/standalone/public
+          mkdir -p .next/standalone/.next
+          cp -r .next/static .next/standalone/.next/static
+          tar -czf release.tar.gz -C .next/standalone .
+          ls -lh release.tar.gz
+
+      - name: Guardar el paquete
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release.tar.gz
+          retention-days: 7
+
+  publicar:
+    name: Publicar en AWS
+    needs: construir
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: deploy
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: release
+
+      - name: Preparar acceso SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      - name: Subir y activar la versión
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          OPTS="-i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes -o ServerAliveInterval=15"
+          VERSION="${GITHUB_SHA::12}"
+          scp $OPTS release.tar.gz "$SSH_USER@$SSH_HOST:/tmp/prisma-release-$VERSION.tar.gz"
+          scp $OPTS deploy/release.sh deploy/ecosystem.config.cjs "$SSH_USER@$SSH_HOST:/tmp/"
+          ssh $OPTS "$SSH_USER@$SSH_HOST" "bash /tmp/release.sh $VERSION"
