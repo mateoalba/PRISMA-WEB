@@ -1,0 +1,723 @@
+/* Componentes de la dimensión "Conexión social y comunidad": Círculos de
+   interés, Encuentros intergeneracionales y Próximos eventos. Reutiliza
+   las variables que ya define dimension-page.module.css en .pagina
+   (--ink-muted, --ink-soft, --hair, --glass, --shadow, --glow,
+   --on-accent), heredadas por cascada normal de CSS. */
+
+.bloque {
+  padding: 64px 0 8px;
+}
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tono, #aebd52);
+}
+.enfasis {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--tono, #aebd52);
+}
+h2.seccion {
+  margin: 6px 0 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 36px;
+  line-height: 1.12;
+}
+.cab {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+.cab p {
+  margin: 8px 0 0;
+  color: var(--ink-muted);
+  font-size: 17px;
+  max-width: 560px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 17px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+.btnP {
+  background: var(--olive-light);
+  color: var(--on-accent);
+  box-shadow: var(--glow);
+}
+.btnP:hover {
+  background: #c7d873;
+}
+.btnS {
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--foreground);
+}
+.btnSm {
+  min-height: 46px;
+  padding: 0 18px;
+  font-size: 16px;
+}
+.btnJoined {
+  background: rgba(174, 189, 82, 0.18);
+  color: #c7d873;
+  border: 1px solid #c7d873;
+  box-shadow: none;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--glass);
+  color: var(--ink-soft);
+}
+.vacio {
+  border: 1.5px dashed var(--hair);
+  border-radius: 20px;
+  padding: 30px;
+  color: var(--ink-muted);
+}
+.ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 16px;
+  background: linear-gradient(152deg, #5e6926 0 30%, #3a4219 30.2% 62%, #1b1e0f 62.2%);
+  color: #e5ecb8;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ===== Círculos de interés ===== */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.filtro {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: transparent;
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.filtroActivo {
+  border-color: #c7d873;
+  background: rgba(174, 189, 82, 0.16);
+  color: var(--foreground);
+}
+.escena {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.fila {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px 14px 14px;
+  border-radius: 22px;
+  border: 1px solid var(--hair);
+  background: var(--color-surface);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.fila:hover {
+  transform: translateX(4px);
+  border-color: color-mix(in srgb, var(--foreground) 25%, transparent);
+}
+.filaSeleccionada {
+  background: rgba(174, 189, 82, 0.12);
+  border-color: #c7d873;
+  box-shadow: var(--glow);
+}
+.filaMini {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  flex-shrink: 0;
+  overflow: hidden;
+  clip-path: polygon(22% 0, 100% 0, 78% 100%, 0 100%);
+}
+.filaMini .ph span {
+  display: none;
+}
+.filaTxt {
+  flex: 1;
+  min-width: 0;
+}
+.filaTxt b {
+  display: block;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 19px;
+  line-height: 1.25;
+}
+.filaTxt span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.escenario {
+  position: relative;
+  min-height: 520px;
+  border-radius: 32px;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--hair);
+}
+.collage {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.5s ease;
+}
+.collageCambiando {
+  opacity: 0;
+}
+.pieza {
+  position: absolute;
+  overflow: hidden;
+}
+.piezaA {
+  left: 0;
+  top: 0;
+  width: 66%;
+  height: 100%;
+  clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
+}
+.piezaB {
+  right: 0;
+  top: 0;
+  width: 44%;
+  height: 55%;
+  clip-path: polygon(28% 0, 100% 0, 100% 100%, 6% 100%);
+}
+.piezaC {
+  right: 0;
+  bottom: 0;
+  width: 48%;
+  height: 47%;
+  clip-path: polygon(4% 0, 100% 0, 100% 100%, 22% 100%);
+}
+.escenarioVelo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(12, 13, 8, 0.96) 0%, rgba(12, 13, 8, 0.7) 34%, rgba(12, 13, 8, 0) 62%);
+}
+.escenarioInfo {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: opacity 0.4s ease, transform 0.5s ease;
+}
+.escenarioInfoCambiando {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.escenarioInfo h3 {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 38px;
+  line-height: 1.08;
+  color: var(--foreground);
+}
+.escenarioInfo p {
+  margin: 0;
+  max-width: 560px;
+  color: var(--ink-soft);
+}
+.escenarioPie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.pila {
+  display: flex;
+  align-items: center;
+}
+.pila span {
+  width: 40px;
+  height: 40px;
+  margin-left: -10px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--on-accent);
+  border: 3px solid #16170f;
+}
+.pila span:first-child {
+  margin-left: 0;
+}
+.pila small {
+  margin-left: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.proxima {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 18px;
+  text-align: center;
+  background: rgba(19, 19, 16, 0.6);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.28);
+}
+.proxima small {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--tono, #aebd52);
+}
+.proxima b {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 26px;
+  line-height: 1.1;
+  color: var(--foreground);
+}
+.proxima span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+/* ===== Encuentros intergeneracionales ===== */
+.puente {
+  position: relative;
+  height: 420px;
+  border-radius: 32px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.puenteLado {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 56%;
+}
+.puenteLadoIzq {
+  left: 0;
+  clip-path: polygon(0 0, 100% 0, 82% 100%, 0 100%);
+}
+.puenteLadoDer {
+  right: 0;
+  clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+}
+.puenteVelo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(12, 13, 8, 0.9), rgba(12, 13, 8, 0.1) 55%);
+}
+.puenteRotulo {
+  position: absolute;
+  bottom: 24px;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  color: #c7d873;
+}
+.puenteRotuloIzq {
+  left: 28px;
+}
+.puenteRotuloDer {
+  right: 28px;
+}
+.puenteCentro {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  padding: 22px;
+  border-radius: 26px;
+  text-align: center;
+  background: rgba(19, 19, 16, 0.72);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow), var(--glow);
+}
+.puenteCentro b {
+  display: block;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 44px;
+  line-height: 1;
+  color: #c7d873;
+}
+.puenteCentro span {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.proyectos {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 22px 2px 14px;
+  scroll-snap-type: x mandatory;
+}
+.proyecto {
+  flex: 0 0 330px;
+  scroll-snap-align: start;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--hair);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.proyecto:hover {
+  border-color: rgba(199, 216, 115, 0.45);
+  transform: translateY(-4px);
+}
+.proyectoImg {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--olive-light);
+}
+.proyectoImg .ph span {
+  display: none;
+}
+.proyecto h3 {
+  margin: 0 0 4px;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 19px;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+.proyecto p {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+.pareja {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #c7d873;
+}
+
+/* ===== Próximos eventos ===== */
+.lineaTiempo {
+  position: relative;
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  padding: 40px 4px 18px;
+  scroll-snap-type: x mandatory;
+}
+.evento {
+  position: relative;
+  flex: 0 0 300px;
+  scroll-snap-align: start;
+  padding-top: 34px;
+}
+.eventoNodo {
+  position: absolute;
+  left: 24px;
+  top: 26px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--background);
+  border: 3px solid #c7d873;
+  box-shadow: 0 0 12px rgba(199, 216, 115, 0.8);
+}
+.boleto {
+  position: relative;
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--hair);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.evento:hover .boleto {
+  transform: translateY(-6px) rotate(-0.6deg);
+  border-color: rgba(199, 216, 115, 0.45);
+  box-shadow: var(--shadow);
+}
+.boletoImg {
+  position: relative;
+  height: 170px;
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 0 100%);
+}
+.fecha {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  width: 64px;
+  padding: 8px 0;
+  border-radius: 16px;
+  text-align: center;
+  line-height: 1.05;
+  background: rgba(19, 19, 16, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+.fecha b {
+  display: block;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 28px;
+}
+.fecha small {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #c7d873;
+}
+.modo {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  background: rgba(19, 19, 16, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: #c7d873;
+}
+.boletoCorte {
+  position: relative;
+  height: 0;
+  border-top: 2px dashed var(--hair);
+  margin: 0 18px;
+}
+.boletoCorte::before,
+.boletoCorte::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--background);
+}
+.boletoCorte::before {
+  left: -30px;
+}
+.boletoCorte::after {
+  right: -30px;
+}
+.boletoCuerpo {
+  padding: 14px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.boleto h3 {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+.boleto p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+.boletoPie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cuenta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: rgba(174, 189, 82, 0.1);
+  border: 1px solid rgba(199, 216, 115, 0.3);
+  width: fit-content;
+  flex-wrap: wrap;
+}
+.cuentaNum {
+  display: flex;
+  gap: 8px;
+}
+.cuentaNum span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 52px;
+  padding: 6px 4px;
+  border-radius: 12px;
+  background: rgba(19, 19, 16, 0.15);
+}
+.cuentaNum b {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 24px;
+  line-height: 1.1;
+  color: #c7d873;
+}
+.cuentaNum small {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-muted);
+}
+.cuentaTxt {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.cuentaTxt b {
+  color: var(--foreground);
+}
+.flechas {
+  display: flex;
+  gap: 10px;
+}
+.flecha {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--hair);
+  background: var(--glass);
+  color: var(--foreground);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.flecha:hover {
+  border-color: #c7d873;
+}
+
+@media (max-width: 1024px) {
+  .escena {
+    grid-template-columns: 1fr;
+  }
+  .lista {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .fila {
+    flex: 0 0 280px;
+  }
+  .escenario {
+    min-height: 460px;
+  }
+}
+@media (max-width: 640px) {
+  .escenarioInfo h3 {
+    font-size: 30px;
+  }
+  .escenario {
+    min-height: 540px;
+  }
+  .escenarioInfo {
+    left: 20px;
+    right: 20px;
+  }
+  .puente {
+    height: 520px;
+  }
+  .puenteLado {
+    width: 100%;
+    height: 52%;
+  }
+  .puenteLadoIzq {
+    top: 0;
+    bottom: auto;
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+  }
+  .puenteLadoDer {
+    top: auto;
+    bottom: 0;
+    clip-path: polygon(0 20%, 100% 0, 100% 100%, 0 100%);
+  }
+  .puenteRotuloIzq {
+    bottom: auto;
+    top: 20px;
+  }
+  .puenteCentro {
+    width: 220px;
+  }
+  .evento,
+  .proyecto {
+    flex-basis: 84%;
+  }
+}

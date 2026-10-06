@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+:root {
+  /* Tokens exactos del sitio de Prisma (penser.org/prisma) */
+  --graphite: #1a1a1a;
+  --graphite-soft: #333333;
+  --olive: #8a9b4a;
+  --olive-light: #a8b96e;
+  --olive-deep: #5c6a30;
+  --paper: #fbfbf9;
+  --ivory-deep: #f0f1ea;
+  --line: rgba(255, 255, 255, 0.12);
+
+  --background: var(--graphite);
+  --foreground: var(--paper);
+  --color-surface: var(--graphite-soft);
+
+  --color-brand: var(--olive);
+  --color-brand-dark: var(--olive-deep);
+  --color-brand-light: var(--olive-light);
+  --color-accent: var(--olive-light);
+
+  --nav-glass-bg: rgba(255, 255, 255, 0.08);
+  --nav-glass-border: rgba(255, 255, 255, 0.1);
+  --nav-glass-border-t: rgba(255, 255, 255, 0.25);
+  --nav-glass-border-l: rgba(255, 255, 255, 0.2);
+  --nav-glass-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Modo claro — paleta clara del diseño de la pantalla de inicio.
+   Solo se redefinen los tokens SEMÁNTICOS (fondo, texto, líneas, acento
+   de énfasis), nunca los tokens crudos (--graphite, --paper, --olive*):
+   así los usos existentes que dependen a propósito de un tono fijo
+   (p. ej. texto oscuro sobre un botón verde) no cambian. */
+html[data-theme="claro"] {
+  --background: #f6f4ec;
+  --foreground: #1c1d16;
+  --color-surface: #ffffff;
+  --color-brand-light: #5c6a1c;
+  --color-accent: #5c6a1c;
+  --line: rgba(28, 29, 22, 0.14);
+
+  --nav-glass-bg: rgba(255, 255, 255, 0.62);
+  --nav-glass-border: rgba(40, 44, 20, 0.08);
+  --nav-glass-border-t: rgba(255, 255, 255, 0.95);
+  --nav-glass-border-l: rgba(255, 255, 255, 0.8);
+  --nav-glass-shadow:
+    0 24px 60px rgba(70, 80, 30, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+}
+
+/* Le dice al navegador qué esquema usa la página en cada tema (barras de
+   scroll, controles de formulario) y evita que un "modo oscuro forzado" del
+   navegador oscurezca de nuevo una pantalla que ya es clara. */
+html {
+  color-scheme: dark;
+}
+html[data-theme="claro"] {
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--color-surface);
+  --color-graphite: var(--graphite);
+  --color-paper: var(--paper);
+  --color-brand: var(--color-brand);
+  --color-brand-dark: var(--color-brand-dark);
+  --color-brand-light: var(--color-brand-light);
+  --color-accent: var(--color-accent);
+  --color-line: var(--line);
+  --font-sans: var(--font-sora);
+  --font-serif: var(--font-fraunces);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sora), Sora, sans-serif;
+}
+
+/* Degradado de la portada (penser.org/prisma): verde oliva que se
+   desvanece hacia negro. Reutilizado en el encabezado y en secciones
+   de bienvenida. */
+.bg-hero-gradient {
+  background: radial-gradient(
+    1400px 1100px at 15% -80px,
+    var(--olive-deep) 0%,
+    var(--graphite) 42%
+  );
+}
+html[data-theme="claro"] .bg-hero-gradient {
+  background: var(--background);
+}
+
+/* Resplandores ambientales del hero — solo visibles en modo claro,
+   igual que en el diseño de la pantalla de inicio clara. */
+.hero-ambient {
+  display: none;
+}
+html[data-theme="claro"] .hero-ambient {
+  display: block;
+}
+.hero-ambient span {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(174, 189, 82, var(--o, 0.2)) 0%, rgba(174, 189, 82, 0) 68%);
+}
+
+/* Logo: se alterna la versión de texto claro/oscuro según el tema. */
+.logo-claro {
+  display: none;
+}
+html[data-theme="claro"] .logo-oscuro {
+  display: none;
+}
+html[data-theme="claro"] .logo-claro {
+  display: block;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-fraunces), Fraunces, serif;
+}
+
+/* Accesibilidad: tamaño de texto (pensado para personas mayores) */
+html[data-text-size="grande"] {
+  font-size: 118%;
+}
+html[data-text-size="muy-grande"] {
+  font-size: 136%;
+}
+
+/* Accesibilidad: reducir movimiento */
+html[data-motion="reducido"] *,
+html[data-motion="reducido"] *::before,
+html[data-motion="reducido"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Accesibilidad: alto contraste */
+html[data-contrast="high"] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --color-surface: #000000;
+  --color-brand: var(--olive-light);
+  --color-brand-dark: var(--olive-light);
+  --color-brand-light: var(--olive-light);
+  --line: #ffffff;
+}
+html[data-contrast="high"] * {
+  border-color: #ffffff !important;
+}
+html[data-contrast="high"] .text-foreground\/70,
+html[data-contrast="high"] .text-foreground\/50,
+html[data-contrast="high"] .text-foreground\/80 {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Franja de palabras en movimiento continuo (marquee) */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee-scroll 34s linear infinite;
+}
+
+/* Efectos ambientales del prisma 3D: glow, halo, partículas y órbitas */
+@keyframes prism-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+@keyframes prism-bloom-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes prism-particle-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(-18px) scale(1.2);
+    opacity: 0.9;
+  }
+}
+@keyframes prism-orbit-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+@keyframes prism-orbit-spin-reverse {
+  from {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}

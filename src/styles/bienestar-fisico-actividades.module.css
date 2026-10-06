@@ -1,0 +1,880 @@
+/* Actividades interactivas de Bienestar físico — portado del diseño
+   entregado (actividades-bienestar.html): Rutina guiada "Muévete conmigo"
+   con figura animada y temporizador, y Mito o Verdad (clasificar frases).
+   Con equivalente en modo claro. */
+
+.practica {
+  --surface-0: #131310;
+  --surface-1: #1c1c16;
+  --surface-2: #23241c;
+  --surface-3: #2d2e24;
+  --ink: #f5f1e6;
+  --ink-soft: #d9d5c6;
+  --ink-muted: #a8a493;
+  --accent: #aebd52;
+  --accent-strong: #c7d873;
+  --on-accent: #181712;
+  --verde: #8fd18a;
+  --verde-soft: rgba(143, 209, 138, 0.15);
+  --coral: #ff8a74;
+  --coral-soft: rgba(255, 138, 116, 0.14);
+  --agua: #9fd3c9;
+  --hair: rgba(245, 241, 230, 0.1);
+  --hair-2: rgba(245, 241, 230, 0.18);
+  --glow: 0 0 44px rgba(174, 189, 82, 0.28);
+  --serif: var(--font-fraunces), Georgia, serif;
+
+  position: relative;
+  color: var(--ink);
+  overflow-x: clip;
+}
+html[data-theme="claro"] .practica {
+  --surface-0: #f6f4ec;
+  --surface-1: #ffffff;
+  --surface-2: #efece1;
+  --surface-3: #e6e2d4;
+  --ink: #1c1d16;
+  --ink-soft: #3d3c33;
+  --ink-muted: #5f5c4e;
+  --accent-strong: #4f5c16;
+  --on-accent: #ffffff;
+  --verde: #3f7d3a;
+  --verde-soft: rgba(63, 125, 58, 0.12);
+  --coral: #c2452e;
+  --coral-soft: rgba(194, 69, 46, 0.12);
+  --agua: #2a7d6e;
+  --hair: rgba(28, 29, 22, 0.1);
+  --hair-2: rgba(28, 29, 22, 0.18);
+  --glow: 0 0 34px rgba(110, 125, 40, 0.22);
+}
+
+.ico {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.eyebrow {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+}
+.enfasis {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent-strong);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 26px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 1rem;
+  transition: transform 0.2s, background 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btnP {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: var(--glow);
+}
+.btnP:hover {
+  background: var(--accent-strong);
+}
+.btnG {
+  background: transparent;
+  border: 1.5px solid var(--hair-2);
+  color: var(--ink);
+}
+.btnG:hover {
+  border-color: var(--verde);
+}
+.btnS {
+  min-height: 48px;
+  padding: 0 20px;
+  font-size: 0.92rem;
+}
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.cab {
+  margin-bottom: 50px;
+}
+.cab h2 {
+  margin: 8px 0 8px;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 2.9rem);
+  line-height: 1.08;
+  color: var(--ink);
+}
+.cab p {
+  margin: 0;
+  color: var(--ink-soft);
+  max-width: 54ch;
+}
+.actTag {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.actNum {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 3.4rem;
+  line-height: 0.9;
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--verde);
+}
+.actTipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--verde-soft);
+  color: var(--verde);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.actTipo .ico {
+  width: 16px;
+  height: 16px;
+}
+.act h3 {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  line-height: 1.15;
+  color: var(--ink);
+}
+.actDesc {
+  margin: 0;
+  color: var(--ink-soft);
+  max-width: 48ch;
+}
+@keyframes bienestarAparece {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* =========================================================
+   ACTIVIDAD 1 · RUTINA GUIADA
+   ========================================================= */
+.rutina {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 60px;
+  align-items: center;
+  margin-bottom: 130px;
+}
+.escena {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.escena::before {
+  content: "";
+  position: absolute;
+  width: 88%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(143, 209, 138, 0.2), transparent 65%);
+}
+.aro {
+  position: relative;
+  width: min(420px, 86vw);
+  aspect-ratio: 1;
+}
+.aro > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.anillo {
+  transform: rotate(-90deg);
+}
+.anillo circle {
+  fill: none;
+  stroke-width: 8;
+}
+.anillo .f {
+  stroke: var(--surface-3);
+}
+.anillo .v {
+  stroke: var(--verde);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+.figura {
+  position: absolute;
+  inset: 14%;
+  display: grid;
+  place-items: center;
+}
+.figura svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.figura .cuerpo {
+  stroke: #f5f1e6;
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.figura .cabeza {
+  fill: #f5f1e6;
+}
+.figura .silla {
+  stroke: #6b6d5a;
+  stroke-width: 6;
+  fill: none;
+  stroke-linecap: round;
+}
+.figura .piso {
+  stroke: rgba(245, 241, 230, 0.15);
+  stroke-width: 3;
+}
+.contador {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: var(--surface-1);
+  border: 1px solid var(--hair-2);
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.cue {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--verde);
+  white-space: nowrap;
+}
+
+/* animaciones de las poses (se pausan con .pausa) */
+.pausa * {
+  animation-play-state: paused !important;
+}
+.brazoI,
+.brazoD,
+.cabG,
+.pierI,
+.pierD,
+.torsoG {
+  transform-box: view-box;
+}
+.pBrazos .brazoI {
+  transform-origin: 100px 82px;
+  animation: bienestarSubeI 8s ease-in-out infinite;
+}
+.pBrazos .brazoD {
+  transform-origin: 100px 82px;
+  animation: bienestarSubeD 8s ease-in-out infinite;
+}
+@keyframes bienestarSubeI {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  40%,
+  60% {
+    transform: rotate(125deg);
+  }
+}
+@keyframes bienestarSubeD {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  40%,
+  60% {
+    transform: rotate(-125deg);
+  }
+}
+.pCuello .cabG {
+  transform-origin: 100px 70px;
+  animation: bienestarCuello 6s ease-in-out infinite;
+}
+@keyframes bienestarCuello {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-22deg);
+  }
+  75% {
+    transform: rotate(22deg);
+  }
+}
+.pPiernas .pierD {
+  transform-origin: 100px 150px;
+  animation: bienestarPierna 6s ease-in-out infinite;
+}
+.pPiernas .torsoG {
+  transform-origin: 100px 150px;
+  animation: bienestarInclina 6s ease-in-out infinite;
+}
+@keyframes bienestarPierna {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  40%,
+  60% {
+    transform: rotate(-78deg);
+  }
+}
+@keyframes bienestarInclina {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  40%,
+  60% {
+    transform: rotate(10deg);
+  }
+}
+.pCaminar .pierI {
+  transform-origin: 100px 142px;
+  animation: bienestarPaso 1.2s ease-in-out infinite;
+}
+.pCaminar .pierD {
+  transform-origin: 100px 142px;
+  animation: bienestarPaso 1.2s ease-in-out infinite reverse;
+}
+.pCaminar .brazoI {
+  transform-origin: 100px 82px;
+  animation: bienestarPaso 1.2s ease-in-out infinite reverse;
+}
+.pCaminar .brazoD {
+  transform-origin: 100px 82px;
+  animation: bienestarPaso 1.2s ease-in-out infinite;
+}
+@keyframes bienestarPaso {
+  0%,
+  100% {
+    transform: rotate(22deg);
+  }
+  50% {
+    transform: rotate(-22deg);
+  }
+}
+.pCaminar .todo {
+  animation: bienestarRebota 0.6s ease-in-out infinite;
+}
+@keyframes bienestarRebota {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.pAgua .brazoD {
+  transform-origin: 100px 82px;
+  animation: bienestarBebe 5s ease-in-out infinite;
+}
+@keyframes bienestarBebe {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  35%,
+  65% {
+    transform: rotate(-128deg);
+  }
+}
+.pListo .brazoI {
+  transform-origin: 100px 82px;
+  transform: rotate(118deg);
+}
+.pListo .brazoD {
+  transform-origin: 100px 82px;
+  transform: rotate(-118deg);
+}
+.pListo .todo {
+  animation: bienestarRebota 1s ease-in-out infinite;
+}
+
+.pasoInfo {
+  min-height: 170px;
+}
+.pasoInfo .n {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--verde);
+  font-size: 1.05rem;
+}
+.pasoInfo h4 {
+  margin: 2px 0 8px;
+  font-size: 1.55rem;
+  line-height: 1.25;
+  font-weight: 800;
+  animation: bienestarAparece 0.4s ease;
+}
+.pasoInfo p {
+  margin: 0;
+  color: var(--ink-soft);
+  animation: bienestarAparece 0.5s ease;
+}
+.cuidado {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 14px;
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+}
+.cuidado .ico {
+  color: var(--coral);
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+.controles {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 26px 0 30px;
+}
+.linea {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+.linea li {
+  position: relative;
+  padding-top: 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  line-height: 1.3;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-family: inherit;
+}
+.linea li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--surface-3);
+}
+.linea li i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--verde);
+  transition: width 0.9s linear;
+}
+.linea li.hecho i {
+  width: 100%;
+}
+.linea li.lineaActiva {
+  color: var(--ink);
+}
+.linea li small {
+  display: block;
+  font-weight: 600;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+}
+.fin {
+  margin-top: 26px;
+  padding: 18px 22px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, var(--verde-soft), transparent);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  animation: bienestarAparece 0.5s ease;
+}
+.fin b {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+}
+.semana {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+.semana span {
+  flex: 1;
+  max-width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: var(--surface-2);
+  color: var(--ink-muted);
+}
+.semana span.on {
+  background: var(--verde);
+  color: #15230f;
+}
+
+/* =========================================================
+   ACTIVIDAD 2 · MITO O VERDAD (clasificar)
+   ========================================================= */
+.mitosCab {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+.marcador {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--verde);
+}
+.marcador small {
+  display: block;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--ink-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+.tablero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.col {
+  min-height: 360px;
+  border-radius: 24px;
+  padding: 18px 16px;
+  border: 2px dashed var(--c);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 10%, transparent), transparent 70%);
+  transition: background 0.3s, transform 0.3s;
+}
+.brilla {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 26%, transparent), transparent 80%);
+  transform: scale(1.02);
+}
+.colT {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--c);
+}
+.colT span {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--c);
+  color: #171512;
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 1rem;
+}
+.col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.col li {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--surface-1);
+  border-left: 4px solid var(--c);
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.4;
+  animation: bienestarCae 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.col li.mal {
+  border-left-color: var(--ink-muted);
+  opacity: 0.75;
+}
+.col li.mal::after {
+  content: " · lo pusiste en la otra";
+  color: var(--ink-muted);
+  font-weight: 700;
+  font-size: 0.74rem;
+}
+@keyframes bienestarCae {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+  }
+}
+.vacio {
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+  font-style: italic;
+  background: none;
+  border: 0;
+  animation: none;
+}
+.frase {
+  position: relative;
+  min-height: 360px;
+  border-radius: 28px;
+  padding: 30px 28px;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, var(--surface-2), var(--surface-1));
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+  transition: transform 0.45s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.35s;
+}
+.vaIzq {
+  transform: translateX(-60%) rotate(-10deg) scale(0.6);
+  opacity: 0;
+}
+.vaDer {
+  transform: translateX(60%) rotate(10deg) scale(0.6);
+  opacity: 0;
+}
+.entra {
+  animation: bienestarEntra 0.5s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+@keyframes bienestarEntra {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.95);
+  }
+}
+.fraseN {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.frase blockquote {
+  margin: 18px 0 22px;
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  line-height: 1.3;
+}
+.frase blockquote::before {
+  content: "\201C";
+  color: var(--verde);
+  font-size: 3rem;
+  line-height: 0;
+  vertical-align: -0.45em;
+  margin-right: 4px;
+}
+.decide {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.decide button {
+  min-height: 66px;
+  border-radius: 20px;
+  border: 2px solid var(--c);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.2s, background 0.2s;
+  font-family: inherit;
+}
+.decide button:hover {
+  background: color-mix(in srgb, var(--c) 22%, transparent);
+}
+.decide button span {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--c);
+  color: #171512;
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+}
+.revela {
+  margin-top: auto;
+  animation: bienestarAparece 0.4s ease;
+}
+.res {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 900;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+.res i {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  color: #171512;
+}
+.revela p {
+  margin: 0 0 18px;
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+}
+.avisoMedico {
+  margin-top: 22px;
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.avisoMedico .ico {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  color: var(--agua);
+}
+.finalM {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+.finalM h4 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  line-height: 1.15;
+}
+.finalM p {
+  margin: 0 0 14px;
+  color: var(--ink-soft);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .rutina {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+  .tablero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .frase {
+    grid-column: 1 / -1;
+    order: -1;
+    min-height: 0;
+  }
+  .col {
+    min-height: 160px;
+  }
+}
+@media (max-width: 600px) {
+  .actNum {
+    font-size: 2.6rem;
+  }
+  .linea li span,
+  .linea li small {
+    display: none;
+  }
+  .controles .btn {
+    flex: 1;
+    padding: 0 14px;
+  }
+  .tablero {
+    gap: 10px;
+  }
+  .col {
+    padding: 14px 10px;
+  }
+  .colT {
+    font-size: 1.15rem;
+  }
+  .colT span {
+    width: 32px;
+    height: 32px;
+  }
+  .col li {
+    font-size: 0.78rem;
+    padding: 8px 10px;
+  }
+  .frase {
+    padding: 24px 20px;
+  }
+  .decide button {
+    min-height: 60px;
+    font-size: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .practica *,
+  .practica *::before,
+  .practica *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

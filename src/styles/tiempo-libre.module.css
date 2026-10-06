@@ -1,0 +1,507 @@
+/* Componentes de la dimensión "Uso del tiempo libre y propósito": mazo
+   de ideas con propósito y generador de sugerencias. Reutiliza las
+   variables que ya define dimension-page.module.css en .pagina
+   (--ink-muted, --ink-soft, --hair, --glass, --shadow, --glow,
+   --on-accent), heredadas por cascada. */
+
+.bloque {
+  padding: 64px 0 8px;
+}
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tono, #aebd52);
+}
+.enfasis {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--tono, #aebd52);
+}
+h2.seccion {
+  margin: 6px 0 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 40px;
+  line-height: 1.1;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 26px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 17px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btnP {
+  background: var(--olive-light);
+  color: var(--on-accent);
+  box-shadow: var(--glow);
+}
+.btnP:hover {
+  background: #c7d873;
+}
+.btnS {
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--foreground);
+}
+.btnSm {
+  min-height: 46px;
+  padding: 0 18px;
+  font-size: 16px;
+}
+.btnJoined {
+  background: rgba(174, 189, 82, 0.18);
+  color: #c7d873;
+  border: 1px solid #c7d873;
+  box-shadow: none;
+}
+.flecha {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 1px solid var(--hair);
+  background: var(--glass);
+  color: var(--foreground);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.2s ease;
+}
+.flecha:hover {
+  border-color: #c7d873;
+}
+.ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 16px;
+  background: linear-gradient(152deg, #5e6926 0 30%, #3a4219 30.2% 62%, #1b1e0f 62.2%);
+  color: #e5ecb8;
+  font-size: 13px;
+  font-weight: 700;
+}
+.phArriba {
+  justify-content: flex-start;
+  padding-top: 90px;
+}
+.vacio {
+  border: 1.5px dashed var(--hair);
+  border-radius: 20px;
+  padding: 30px;
+  color: var(--ink-muted);
+}
+
+/* ===== Ideas con propósito — mazo ===== */
+.proposito {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 56px;
+  align-items: center;
+}
+.propositoTxt p {
+  margin: 14px 0 26px;
+  color: var(--ink-soft);
+  font-size: 19px;
+  max-width: 460px;
+}
+.impacto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  min-height: 30px;
+}
+.impacto span {
+  font-size: 16px;
+  color: var(--ink-muted);
+  line-height: 1.4;
+}
+.impacto b {
+  color: #c7d873;
+  font-weight: 800;
+}
+.mazoNav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.mazoNavCuenta {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink-muted);
+  min-width: 64px;
+  text-align: center;
+}
+.mazoNavCuenta b {
+  color: var(--foreground);
+  font-size: 20px;
+}
+
+.mazo {
+  position: relative;
+  height: 540px;
+  perspective: 1400px;
+}
+.carta {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 380px;
+  height: 500px;
+  margin: -250px 0 0 -190px;
+  border-radius: 30px;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--hair);
+  box-shadow: var(--shadow);
+  transition: transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.5s ease;
+}
+.cartaPos0 {
+  z-index: 5;
+  transform: translateX(0) rotate(0);
+}
+.cartaPos1 {
+  z-index: 4;
+  transform: translateX(52px) translateY(14px) rotate(6deg) scale(0.95);
+  filter: brightness(0.6);
+}
+.cartaPos2 {
+  z-index: 3;
+  transform: translateX(96px) translateY(26px) rotate(11deg) scale(0.9);
+  filter: brightness(0.4);
+}
+.cartaOculta {
+  z-index: 1;
+  opacity: 0;
+  transform: translateX(120px) rotate(14deg) scale(0.86);
+}
+.cartaSale {
+  transform: translateX(-140%) rotate(-18deg) !important;
+  opacity: 0;
+}
+.cartaImg {
+  position: absolute;
+  inset: 0;
+}
+.cartaVelo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(12, 13, 8, 0.97) 0%, rgba(12, 13, 8, 0.75) 40%, rgba(12, 13, 8, 0) 68%);
+}
+.cartaNum {
+  position: absolute;
+  right: 22px;
+  top: 14px;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: 86px;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgba(199, 216, 115, 0.6);
+}
+.cartaFrec {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  background: rgba(19, 19, 16, 0.65);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #c7d873;
+}
+.cartaCuerpo {
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.carta h3 {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--foreground);
+}
+.carta p {
+  margin: 0;
+  font-size: 17px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.cartaRol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #c7d873;
+}
+.mazoPista {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+/* ===== Ideas para tu tiempo libre — generador ===== */
+.gen {
+  position: relative;
+  border-radius: 34px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 560px;
+  background: linear-gradient(135deg, rgba(174, 189, 82, 0.1), rgba(174, 189, 82, 0) 45%), var(--color-surface);
+  border: 1px solid var(--hair);
+}
+.genPanel {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.genPanel h3 {
+  margin: 6px 0 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 32px;
+  line-height: 1.15;
+  color: var(--foreground);
+}
+.pregunta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.pregunta legend {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink-soft);
+  padding: 0;
+  margin-bottom: 10px;
+}
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.opcion {
+  position: relative;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 0 18px;
+  border-radius: 16px;
+  border: 1px solid var(--hair);
+  background: var(--glass);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  transition: all 0.2s ease;
+}
+.opcionActiva {
+  border-color: #c7d873;
+  background: rgba(174, 189, 82, 0.18);
+  color: var(--foreground);
+  box-shadow: 0 0 22px rgba(174, 189, 82, 0.3);
+}
+.opcion input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+  margin: 0;
+}
+.genBoton svg {
+  transition: transform 0.6s ease;
+}
+.genBotonGirando svg {
+  transform: rotate(360deg);
+}
+
+.genRes {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+.resImg {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%);
+  transition: opacity 0.5s ease;
+}
+.resVelo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(12, 13, 8, 0.96), rgba(12, 13, 8, 0.55) 45%, rgba(12, 13, 8, 0.05) 75%);
+}
+.resCuerpo {
+  position: relative;
+  z-index: 3;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  transition: opacity 0.35s ease;
+}
+.resCuerpoCargando {
+  opacity: 0;
+}
+.resCuerpo p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.resCuerpo h4 {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--foreground);
+}
+.resMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.resMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  background: rgba(19, 19, 16, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.resAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+.vacioRes {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 40px;
+  color: var(--ink-muted);
+  z-index: 3;
+}
+.vacioRes b {
+  display: block;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 26px;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+.dado {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 18px;
+  filter: drop-shadow(0 0 20px rgba(199, 216,115, 0.5));
+}
+
+.guardadas {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.guardadasT {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink-muted);
+}
+.guardada {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(174, 189, 82, 0.12);
+  border: 1px solid rgba(199, 216, 115, 0.35);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+@media (max-width: 1024px) {
+  .proposito {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .gen {
+    grid-template-columns: 1fr;
+  }
+  .genRes {
+    min-height: 440px;
+  }
+  .resImg {
+    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+  }
+}
+@media (max-width: 640px) {
+  h2.seccion {
+    font-size: 32px;
+  }
+  .mazo {
+    height: 480px;
+  }
+  .carta {
+    width: 300px;
+    height: 440px;
+    margin: -220px 0 0 -170px;
+  }
+  .carta h3 {
+    font-size: 25px;
+  }
+  .genPanel,
+  .resCuerpo {
+    padding: 26px 20px;
+  }
+  .genRes {
+    min-height: 520px;
+  }
+}
