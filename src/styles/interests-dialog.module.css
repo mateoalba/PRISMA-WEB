@@ -7,7 +7,10 @@
   --shadow-glow: 0 0 48px rgba(174, 189, 82, 0.28);
 
   position: relative;
-  min-height: 100vh;
+  /* Ocupa lo que sobra de la ventana (la barra de accesibilidad de arriba ya
+     ocupa su parte); con 100vh la página se pasaba y salía otra barra de scroll. */
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,9 +51,15 @@
 }
 
 .ventana {
-  position: relative;
-  width: min(980px, 100%);
-  max-height: calc(100vh - 48px);
+  /* Un <dialog> abierto con showModal() se centra con "margin: auto" sobre
+     position: fixed + inset: 0. El reseteo de Tailwind le quita el margen y
+     se quedaba pegado arriba a la izquierda, así que se vuelve a indicar. */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  width: min(980px, calc(100% - 32px));
+  max-height: calc(100dvh - 48px);
   border-radius: 32px;
   overflow: hidden;
   background: rgba(30, 31, 24, 0.72);
