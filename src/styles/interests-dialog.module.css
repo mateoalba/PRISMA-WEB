@@ -1,25 +1,26 @@
+/* Pantalla de bienvenida "¿Qué te gustaría explorar?": página completa, sin
+   recuadro. Encabezado, tarjetas en filas de 3 y una barra de acciones fija
+   abajo para que "Continuar" siempre esté a la vista. */
+
 .pagina {
   --accent-strong: #c7d873;
   --ink-muted: #a8a493;
   --ink-soft: #d9d5c6;
   --on-accent: #181712;
-  --shadow-card: 0 24px 60px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 48px rgba(174, 189, 82, 0.28);
 
   position: relative;
   /* Ocupa lo que sobra de la ventana (la barra de accesibilidad de arriba ya
-     ocupa su parte); con 100vh la página se pasaba y salía otra barra de scroll. */
+     ocupa su parte). "clip" y no "hidden": así la barra de acciones puede
+     quedarse pegada abajo con position: sticky. */
   flex: 1 1 auto;
-  min-height: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  flex-direction: column;
+  overflow-x: clip;
   background: var(--graphite);
   color: var(--paper);
   font-size: 18px;
   line-height: 1.6;
-  padding: 24px;
 }
 .pagina::before {
   content: "";
@@ -50,74 +51,29 @@
   background: radial-gradient(circle, rgba(174, 189, 82, 0.18) 0%, rgba(174, 189, 82, 0) 68%);
 }
 
-.ventana {
-  /* Un <dialog> abierto con showModal() se centra con "margin: auto" sobre
-     position: fixed + inset: 0. El reseteo de Tailwind le quita el margen y
-     se quedaba pegado arriba a la izquierda, así que se vuelve a indicar. */
-  position: fixed;
-  inset: 0;
-  margin: auto;
-  height: fit-content;
-  width: min(980px, calc(100% - 32px));
-  max-height: calc(100dvh - 48px);
-  border-radius: 32px;
-  overflow: hidden;
-  background: rgba(30, 31, 24, 0.72);
-  -webkit-backdrop-filter: blur(28px) saturate(170%);
-  backdrop-filter: blur(28px) saturate(170%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top-color: rgba(255, 255, 255, 0.28);
-  border-left-color: rgba(255, 255, 255, 0.22);
-  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+.formulario {
+  position: relative;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+}
+
+.contenido {
+  flex: 1 1 auto;
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  padding: clamp(20px, 4vh, 48px) clamp(18px, 4vw, 56px) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.4vh, 26px);
   animation: aparece 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.ventana::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0) 38%,
-    rgba(255, 255, 255, 0) 70%,
-    rgba(174, 189, 82, 0.1) 100%
-  );
-}
-.cuerpo {
-  position: relative;
-  overflow-y: auto;
-  padding: 44px 48px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-.pie {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 20px 48px 28px;
-  border-top: 1px solid rgba(245, 241, 230, 0.12);
-  background: rgba(19, 19, 16, 0.35);
 }
 
 .encabezado {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-}
-.encabezadoTexto {
-  display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-width: 620px;
+  gap: 6px;
+  max-width: 900px;
 }
 .eyebrow {
   font-size: 13px;
@@ -129,7 +85,7 @@
 .encabezado h1 {
   margin: 0;
   font-family: var(--font-fraunces), Georgia, serif;
-  font-size: 44px;
+  font-size: clamp(32px, 3.6vw, 44px);
   font-weight: 700;
   line-height: 1.1;
   color: var(--paper);
@@ -141,7 +97,7 @@
 }
 .encabezado p {
   margin: 0;
-  font-size: 18px;
+  font-size: 17px;
   color: var(--ink-soft);
 }
 
@@ -173,12 +129,14 @@
   cursor: pointer;
 }
 
+/* ---------- Tarjetas: filas de 3 ---------- */
 .opciones {
   margin: 0;
   padding: 0;
   border: 0;
+  min-width: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 .opcion {
@@ -186,8 +144,8 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  min-height: 92px;
-  padding: 16px 18px;
+  min-height: 78px;
+  padding: 12px 18px;
   border-radius: 22px;
   cursor: pointer;
   background: rgba(245, 241, 230, 0.05);
@@ -209,8 +167,8 @@
   height: 1px;
 }
 .opcionIcono {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
 }
 .opcionTexto {
@@ -218,16 +176,17 @@
   flex-direction: column;
   gap: 2px;
   flex: 1;
+  min-width: 0;
 }
 .opcionTitulo {
   font-size: 18px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 .opcionSub {
   font-size: 15px;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.3;
   color: var(--ink-muted);
 }
 .opcionCheck {
@@ -263,13 +222,40 @@
   outline: 3px solid var(--accent-strong);
   outline-offset: 3px;
 }
+/* La décima tarjeta queda sola en su fila: se centra. */
+@media (min-width: 961px) {
+  .opcionSola {
+    grid-column: 2;
+  }
+}
+
+/* ---------- Barra de acciones fija abajo ---------- */
+.pie {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  border-top: 1px solid rgba(245, 241, 230, 0.12);
+  background: rgba(19, 19, 16, 0.82);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+.pieInterior {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  padding: 14px clamp(18px, 4vw, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 60px;
+  min-height: 58px;
   padding: 0 32px;
   border-radius: 999px;
   font: inherit;
@@ -311,7 +297,7 @@
 @keyframes aparece {
   from {
     opacity: 0;
-    transform: translateY(24px) scale(0.98);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -319,36 +305,35 @@
   }
 }
 
-@media (max-width: 760px) {
-  .pagina {
-    padding: 0;
+@media (max-width: 960px) {
+  .opciones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .ventana {
-    width: 100%;
-    max-width: none;
-    max-height: 100vh;
-    height: 100%;
-    border-radius: 0;
+}
+
+@media (max-width: 620px) {
+  .opciones {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
-  .cuerpo {
-    padding: 32px 18px 20px;
-    gap: 22px;
-  }
-  .pie {
-    padding: 16px 18px 24px;
+  .pieInterior {
     flex-direction: column-reverse;
     align-items: stretch;
+    padding-top: 14px;
+    padding-bottom: 18px;
   }
   .pie .btn {
     width: 100%;
   }
-  .encabezado h1 {
-    font-size: 34px;
-  }
-  .opciones {
-    grid-template-columns: 1fr;
-  }
   .nota {
     text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contenido,
+  .opcion {
+    animation: none;
+    transition: none;
   }
 }
