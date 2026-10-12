@@ -7,6 +7,7 @@ import styles from "@/styles/dimension-page.module.css";
 // una sale de web/public/dimensiones/<slug>-1.jpg ... <slug>-4.jpg — si
 // falta alguna, se ve el mismo espacio reservado de siempre.
 const FOTOS = [1, 2, 3, 4];
+const EXTENSIONES_FOTO = ["jpg", "jpeg"];
 
 export function DimensionHeroGallery({
   slug,
@@ -74,12 +75,14 @@ function HeroFoto({
   title: string;
   activo: boolean;
 }) {
-  const [missing, setMissing] = useState(false);
+  // Prueba .jpg y luego .jpeg (algunas fotos se subieron con esa extensión).
+  const [intento, setIntento] = useState(0);
   const imgRef = useRef<HTMLImageElement>(null);
+  const missing = intento >= EXTENSIONES_FOTO.length;
 
   useEffect(() => {
     const img = imgRef.current;
-    if (img && img.complete && img.naturalWidth === 0) setMissing(true);
+    if (img && img.complete && img.naturalWidth === 0) setIntento((n) => n + 1);
   }, []);
 
   return (
@@ -90,7 +93,13 @@ function HeroFoto({
         </div>
       ) : (
         // eslint-disable-next-line @next/next/no-img-element -- foto dentro de un marco recortado con clip-path
-        <img ref={imgRef} src={`/dimensiones/${slug}-${indice}.jpg`} alt="" onError={() => setMissing(true)} />
+        <img
+          key={intento}
+          ref={imgRef}
+          src={`/dimensiones/${slug}-${indice}.${EXTENSIONES_FOTO[intento]}`}
+          alt=""
+          onError={() => setIntento((n) => n + 1)}
+        />
       )}
     </div>
   );

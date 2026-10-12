@@ -116,6 +116,14 @@ html[data-theme="claro"] .detalle {
     flex-grow 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
     filter 0.4s ease;
   filter: saturate(0.75) brightness(0.8);
+  /* El texto va sobre una foto con velo oscuro, así que sus colores NO siguen
+     el tema: se fijan los del modo oscuro (si no, en modo claro quedaría
+     texto oscuro encima de la foto oscura). */
+  --foreground: #f5f1e6;
+  --ink-soft: #e4e0d2;
+  --ink-muted: #c9c5b5;
+  color: #f5f1e6;
+  color-scheme: dark;
 }
 .franjaActiva {
   flex-grow: 6.5;
@@ -144,9 +152,10 @@ html[data-theme="claro"] .detalle {
 .franjaSombra {
   position: absolute;
   inset: 0;
+  /* Velo oscuro fijo (igual en modo claro y oscuro) para leer sobre cualquier foto. */
   background:
-    linear-gradient(0deg, rgba(10, 11, 7, 0.95) 0%, rgba(10, 11, 7, 0.55) 38%, rgba(10, 11, 7, 0.1) 70%),
-    linear-gradient(90deg, rgba(10, 11, 7, 0.35), transparent 40%);
+    linear-gradient(0deg, rgba(10, 11, 7, 0.92) 0%, rgba(10, 11, 7, 0.6) 40%, rgba(10, 11, 7, 0.15) 72%),
+    linear-gradient(90deg, rgba(10, 11, 7, 0.45), transparent 45%);
 }
 .franjaBorde {
   position: absolute;
@@ -211,6 +220,13 @@ html[data-theme="claro"] .detalle {
   opacity: 0;
   pointer-events: none;
 }
+/* Sombra suave tras las letras por si la foto es muy clara. */
+.franjaVertical,
+.franjaContenido {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 2px 18px rgba(0, 0, 0, 0.45);
+}
 
 .franjaContenido {
   position: absolute;
@@ -271,6 +287,7 @@ html[data-theme="claro"] .detalle {
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   color: var(--foreground);
+  text-shadow: none;
 }
 .acciones {
   display: flex;
@@ -292,6 +309,7 @@ html[data-theme="claro"] .detalle {
   background: var(--olive-light);
   color: var(--on-accent);
   box-shadow: 0 0 40px rgba(174, 189, 82, 0.3);
+  text-shadow: none;
   transition:
     transform 0.2s ease,
     background-color 0.2s ease;

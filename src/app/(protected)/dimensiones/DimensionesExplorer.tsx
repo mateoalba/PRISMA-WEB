@@ -325,22 +325,32 @@ function MapaConexiones({
   );
 }
 
-// Misma foto que la ficha de la dimensión (web/public/dimensiones/<slug>.jpg).
-// Si todavía no existe, se ve el degradado de respaldo con el color propio.
-function FranjaImagen({ slug, title }: { slug: string; title: string }) {
-  const [missing, setMissing] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
+// Primera foto de la ficha de la dimensión (web/public/dimensiones/<slug>-1.jpg,
+// o .jpeg). Si todavía no existe, se ve el degradado de respaldo con el color propio.
+const EXTENSIONES_FOTO = ["jpg", "jpeg"];
 
+function FranjaImagen({ slug, title }: { slug: string; title: string }) {
+  const [intento, setIntento] = useState(0);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const missing = intento >= EXTENSIONES_FOTO.length;
+
+  // Si la imagen falló antes de hidratar, onError ya no dispara: se revisa aquí.
   useEffect(() => {
     const img = imgRef.current;
-    if (img && img.complete && img.naturalWidth === 0) setMissing(true);
+    if (img && img.complete && img.naturalWidth === 0) setIntento((n) => n + 1);
   }, []);
 
   if (missing) return <div className={styles.ph} />;
 
   return (
     // eslint-disable-next-line @next/next/no-img-element -- foto dentro de una franja recortada con clip-path
-    <img ref={imgRef} src={`/dimensiones/${slug}.jpg`} alt={title} onError={() => setMissing(true)} />
+    <img
+      key={intento}
+      ref={imgRef}
+      src={`/dimensiones/${slug}-1.${EXTENSIONES_FOTO[intento]}`}
+      alt={title}
+      onError={() => setIntento((n) => n + 1)}
+    />
   );
 }
 
