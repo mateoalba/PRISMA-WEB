@@ -5,7 +5,10 @@ import { rutaInternaSegura } from "@/lib/auth/safe-next";
 // Recibe el redirect de OAuth (Google) y de enlaces mágicos de Supabase:
 // intercambia el código por una sesión y continúa hacia `next`.
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams, origin: origenPeticion } = new URL(request.url);
+  // Detrás del proxy del servidor (Caddy) la petición llega por http y
+  // 127.0.0.1; la dirección pública sale de APP_URL cuando está definida.
+  const origin = process.env.APP_URL?.trim().replace(/\/$/, "") || origenPeticion;
   const code = searchParams.get("code");
   const next = rutaInternaSegura(searchParams.get("next"));
 
